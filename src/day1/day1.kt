@@ -13,15 +13,25 @@ fun main() {
         listOne.add(splitt[0].toInt())
         listTwo.add(splitt[1].toInt())
     }
-    println(listOne.sorted())
-    println(listTwo.sorted())
-    val done = listOne.sorted().zip(listTwo.sorted()).map {
-        println("${it.first} - ${it.second}")
-        val diff = it.first - it.second
-        println(abs(diff))
-        abs(diff)
+
+    val done = listOne.map { orig ->
+        val amount = listTwo.filter { it == orig }.count()
+        orig * amount
     }.sum()
+
     println(done)
+    //PART 1
+//    println(listOne.sorted())
+//    println(listTwo.sorted())
+//    val done = listOne.sorted().zip(listTwo.sorted()).map {
+//        println("${it.first} - ${it.second}")
+//        val diff = it.first - it.second
+//        println(abs(diff))
+//        abs(diff)
+//    }.sum()
+//    println(done)
+
+
 }
 fun getFile(): List<String>{
     return File("src/day1/input.txt").readLines()
