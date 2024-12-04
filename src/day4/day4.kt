@@ -18,6 +18,13 @@ enum class Direction(val coords: String) {
     BOTTOM_RIGHT("1,1")
 }
 
+enum class Corner(val coords: String, val opposite: String) {
+    TOP_LEFT("-1,-1", "1,1"),
+    TOP_RIGHT("1,-1", "-1,1")
+//    BOTTOM_LEFT("-1,1", "1,-1"),
+//    BOTTOM_RIGHT("1,1", "-1,-1")
+}
+
 fun checkAroundLetter(
     letterNow: Char,
     currentX: Int,
@@ -78,7 +85,42 @@ fun checkAroundLetter(
 //    return false
 }
 
-fun part2(){
+
+fun checkAroundA(
+    currentX: Int,
+    currentY: Int,
+    data: List<String>
+): Int {
+    var found = 0
+    Corner.entries.forEach {
+        println(it)
+        println(it.coords)
+        val cur = data.getOrNull(currentY + it.coords.split(",")[1].toInt())
+            ?.getOrNull(currentX + it.coords.split(",")[0].toInt())
+        if(cur == 'S' || cur == 'M'){
+            println("+++++++>${cur}")
+            val op = data.getOrNull(currentY + it.opposite.split(",")[1].toInt())
+                ?.getOrNull(currentX + it.opposite.split(",")[0].toInt())
+
+            println("=========l>${cur} - > ${op}")
+            if(cur != op && (op == 'S' || op == 'M')){
+                found++
+            }
+        }
+        println("--------->${cur}")
+
+    }
+
+    if(found == 2){
+        return 1
+    }else{
+        return 0
+    }
+
+//    return 0
+}
+
+fun part2() {
     //    val data = getFile("src/day4/smaller-input.txt")
 //    val data = getFile("src/day4/other-input.txt")
     val data = getFile("src/day4/input.txt")
@@ -89,15 +131,20 @@ fun part2(){
         s.forEachIndexed { x, c ->
             println(c)
 
-            if (c == 'X') {
-                println("----- {${x},${y}}")
-                val ye = checkAroundLetter(c, x, y, null, 0,data)
-                if (ye > 0) {
-                    println("At {${x},${y}} X SUCCESS -> ${ye}")
-                    sum+= ye
-                } else {
-                    println("At {${x},${y}} X failed")
+            if (c == 'A') {
+                println("A at----- {${x},${y}}")
+                if(x == 0 || x == s.length - 1 || y == 0 || y == data.size - 1){
+                    println("EDGE")
+                }else{
+                    val ye = checkAroundA(x, y, data)
+                    if (ye > 0) {
+                        println("At {${x},${y}} X SUCCESS -> ${ye}")
+                        sum += ye
+                    } else {
+                        println("At {${x},${y}} X failed")
+                    }
                 }
+
             }
 
 
@@ -119,10 +166,10 @@ fun part1() {
 
             if (c == 'X') {
                 println("----- {${x},${y}}")
-                val ye = checkAroundLetter(c, x, y, null, 0,data)
+                val ye = checkAroundLetter(c, x, y, null, 0, data)
                 if (ye > 0) {
                     println("At {${x},${y}} X SUCCESS -> ${ye}")
-                    sum+= ye
+                    sum += ye
                 } else {
                     println("At {${x},${y}} X failed")
                 }
