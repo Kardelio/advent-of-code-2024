@@ -3,7 +3,8 @@ package day4
 import utils.getFile
 
 fun main() {
-    part1()
+//    part1()
+    part2()
 }
 
 enum class Direction(val coords: String) {
@@ -22,8 +23,9 @@ fun checkAroundLetter(
     currentX: Int,
     currentY: Int,
     runningDirection: Direction?,
+    count: Int,
     allData: List<String>
-): Boolean {
+): Int {
     val letterToFind = when (letterNow) {
         'X' -> 'M'
         'M' -> 'A'
@@ -35,11 +37,11 @@ fun checkAroundLetter(
     //above
     if (letterToFind == '_') {
         //add point?
-        return true
+        return count + 1
     } else if (letterToFind == '.') {
-        return false
+        return 0
     } else {
-        var result = false
+        var coo = count
         for (xx in -1..1) {
             for (yy in -1..1) {
                 val newX = xx
@@ -51,13 +53,16 @@ fun checkAroundLetter(
                     continue
                 } else {
                     //TODO direction needs to stay the same!
-                    if (allData.getOrNull(currentY + newY)?.getOrNull(currentX + newX) == letterToFind && (runningDirection == null || runningDirection == currentDir)) {
+                    if (allData.getOrNull(currentY + newY)
+                            ?.getOrNull(currentX + newX) == letterToFind && (runningDirection == null || runningDirection == currentDir)
+                    ) {
                         println("Found letter: ${letterToFind} at {${currentX + newX},${currentY + newY}}")
-                        result = checkAroundLetter(
+                        coo += checkAroundLetter(
                             letterToFind,
                             currentX + newX,
                             currentY + newY,
                             currentDir,
+                            count,
                             allData
                         )
 //                        if(ans == true){
@@ -68,14 +73,15 @@ fun checkAroundLetter(
                 }
             }
         }
-        return result
+        return coo
     }
 //    return false
 }
 
-fun part1() {
-    val data = getFile("src/day4/smaller-input.txt")
-//    val data = getFile("src/day4/input.txt")
+fun part2(){
+    //    val data = getFile("src/day4/smaller-input.txt")
+//    val data = getFile("src/day4/other-input.txt")
+    val data = getFile("src/day4/input.txt")
     println(data)
     var sum = 0
     data.forEachIndexed { y, s ->
@@ -85,9 +91,38 @@ fun part1() {
 
             if (c == 'X') {
                 println("----- {${x},${y}}")
-                if (checkAroundLetter(c, x, y, null, data)) {
-                    println("At {${x},${y}} X SUCCESS")
-                    sum++
+                val ye = checkAroundLetter(c, x, y, null, 0,data)
+                if (ye > 0) {
+                    println("At {${x},${y}} X SUCCESS -> ${ye}")
+                    sum+= ye
+                } else {
+                    println("At {${x},${y}} X failed")
+                }
+            }
+
+
+        }
+    }
+    println(sum)
+}
+
+fun part1() {
+//    val data = getFile("src/day4/smaller-input.txt")
+//    val data = getFile("src/day4/other-input.txt")
+    val data = getFile("src/day4/input.txt")
+    println(data)
+    var sum = 0
+    data.forEachIndexed { y, s ->
+        println(s)
+        s.forEachIndexed { x, c ->
+            println(c)
+
+            if (c == 'X') {
+                println("----- {${x},${y}}")
+                val ye = checkAroundLetter(c, x, y, null, 0,data)
+                if (ye > 0) {
+                    println("At {${x},${y}} X SUCCESS -> ${ye}")
+                    sum+= ye
                 } else {
                     println("At {${x},${y}} X failed")
                 }
@@ -103,4 +138,5 @@ fun part1() {
 NOT:
 3658
 3326
+2017
  */
